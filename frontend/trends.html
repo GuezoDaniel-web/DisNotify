@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#0a0e14">
+<title>Trends · DisNotify</title>
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='8' fill='%232ee6a8'/%3E%3C/svg%3E">
+<link rel="stylesheet" href="css/base.css">
+<link rel="stylesheet" href="css/layout.css">
+<link rel="stylesheet" href="css/components.css">
+</head>
+<body>
+<div class="app">
+  <main class="main">
+    <div class="page-head">
+      <div><h1>Market trends</h1>
+        <div class="sub">Where prices are heading across categories and retailers.</div></div>
+    </div>
+    <div class="stat-grid" id="statRow"></div>
+    <div class="split">
+      <section class="card"><div class="card-head"><h2>Category movement</h2><span class="small muted">index: 100 = MSRP</span></div>
+        <div class="card-body"><div id="catChart"></div></div></section>
+      <section class="card"><div class="card-head"><h2>Cheapest retailer, by wins</h2></div>
+        <div class="card-body" id="retailerBars"></div></section>
+    </div>
+    <section class="card mt-3"><div class="card-head"><h2>Biggest movers right now</h2></div>
+      <div class="table-wrap"><table class="table">
+        <thead><tr><th>Product</th><th>Best price</th><th>vs MSRP</th><th>vs 90d avg</th><th>Retailer</th></tr></thead>
+        <tbody id="moversBody"></tbody></table></div></section>
+  </main>
+</div>
+<script type="module" src="js/trends.js"></script>
+</body>
+</html>

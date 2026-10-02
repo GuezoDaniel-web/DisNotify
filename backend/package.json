@@ -1,0 +1,50 @@
+{
+  "name": "disnotify-backend",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "description": "DisNotify API — price tracking, comparison and alerting. SCAFFOLD ONLY: every file under this folder is a guided stub for you to implement.",
+  "engines": { "node": ">=20" },
+  "scripts": {
+    "dev": "node --watch server.js",
+    "start": "node server.js",
+    "migrate": "psql $DATABASE_URL -f db/schema.sql",
+    "worker": "node jobs/scheduler.js",
+    "test": "node --test"
+  },
+  "dependencies": {
+    "express": "^4.19.2",
+    "cors": "^2.8.5",
+    "helmet": "^7.1.0",
+    "compression": "^1.7.4",
+    "dotenv": "^16.4.5",
+    "pg": "^8.12.0",
+    "ioredis": "^5.4.1",
+    "bcrypt": "^5.1.1",
+    "jsonwebtoken": "^9.0.2",
+    "zod": "^3.23.8",
+    "express-rate-limit": "^7.4.0",
+    "node-cron": "^3.0.3",
+    "p-queue": "^8.0.1",
+    "undici": "^6.19.8",
+    "cheerio": "^1.0.0",
+    "playwright": "^1.47.0",
+    "web-push": "^3.6.7",
+    "resend": "^4.0.0",
+    "pino": "^9.4.0"
+  },
+  "devDependencies": {
+    "nodemon": "^3.1.4"
+  },
+  "//deps": {
+    "express+cors+helmet": "HTTP layer",
+    "pg": "PostgreSQL — products, offers, price_history, alerts, users",
+    "ioredis": "cache + job de-duplication + rate-limit buckets",
+    "cheerio": "fast HTML parsing for static retailer pages",
+    "playwright": "ONLY for retailers that render prices with JavaScript (Best Buy, Micro Center)",
+    "node-cron": "schedules the price refresh + alert evaluation jobs",
+    "web-push": "sends browser push using your VAPID keys",
+    "resend": "transactional email (swap for SendGrid/SMTP if you prefer)",
+    "p-queue": "throttles concurrent scrape requests per retailer domain"
+  }
+}

@@ -1,0 +1,164 @@
+/* ============================================================
+   DisNotify — base.css
+   Design tokens, reset, typography, utilities.
+   Change the look of the whole app from the :root block below.
+   ============================================================ */
+
+:root {
+  /* Surfaces */
+  --bg:          #0a0e14;
+  --surface:     #111721;
+  --surface-2:   #18202c;
+  --surface-3:   #202a38;
+  --border:      #26303f;
+  --border-soft: #1c2531;
+
+  /* Text */
+  --text:        #e8eef6;
+  --text-dim:    #9aa8b8;
+  --text-faint:  #6b7889;
+
+  /* Brand + status */
+  --accent:      #2ee6a8;
+  --accent-ink:  #04231a;
+  --accent-soft: rgba(46, 230, 168, .12);
+  --info:        #4f8cff;
+  --info-soft:   rgba(79, 140, 255, .14);
+  --danger:      #ff5f5f;
+  --danger-soft: rgba(255, 95, 95, .14);
+  --warn:        #ffb020;
+  --warn-soft:   rgba(255, 176, 32, .14);
+
+  /* Shape */
+  --r-sm: 8px;
+  --r-md: 12px;
+  --r-lg: 18px;
+  --r-pill: 999px;
+
+  /* Elevation */
+  --shadow-1: 0 1px 2px rgba(0,0,0,.4);
+  --shadow-2: 0 8px 24px -8px rgba(0,0,0,.55);
+  --shadow-3: 0 24px 60px -20px rgba(0,0,0,.7);
+
+  /* Layout */
+  --header-h: 64px;
+  --sidebar-w: 248px;
+  --maxw: 1360px;
+
+  --ease: cubic-bezier(.4, 0, .2, 1);
+}
+
+[data-theme="light"] {
+  --bg:          #f4f6fa;
+  --surface:     #ffffff;
+  --surface-2:   #f7f9fc;
+  --surface-3:   #eef2f8;
+  --border:      #dde3ec;
+  --border-soft: #e8edf4;
+  --text:        #0d1520;
+  --text-dim:    #5a6779;
+  --text-faint:  #8894a5;
+  --accent:      #00a878;
+  --accent-ink:  #ffffff;
+  --accent-soft: rgba(0, 168, 120, .12);
+  --shadow-2: 0 8px 24px -10px rgba(15, 30, 50, .18);
+  --shadow-3: 0 24px 60px -22px rgba(15, 30, 50, .25);
+}
+
+*, *::before, *::after { box-sizing: border-box; }
+
+html, body { height: 100%; }
+
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--text);
+  font-family: "Inter", ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, Arial, sans-serif;
+  font-size: 15px;
+  line-height: 1.55;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+  transition: background .2s var(--ease), color .2s var(--ease);
+}
+
+/* Subtle ambient glow behind the app (dark mode only) */
+body::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 0;
+  background:
+    radial-gradient(720px 380px at 12% -10%, rgba(46,230,168,.07), transparent 60%),
+    radial-gradient(680px 340px at 92% 0%, rgba(79,140,255,.07), transparent 62%);
+}
+[data-theme="light"] body::before { opacity: .5; }
+
+h1, h2, h3, h4 { margin: 0; font-weight: 650; letter-spacing: -.02em; line-height: 1.2; }
+h1 { font-size: clamp(1.35rem, 1.05rem + 1.3vw, 1.9rem); }
+h2 { font-size: clamp(1.1rem, .95rem + .7vw, 1.35rem); }
+h3 { font-size: 1rem; }
+p  { margin: 0 0 .8em; }
+
+a { color: inherit; text-decoration: none; }
+a:hover { color: var(--accent); }
+
+img { max-width: 100%; display: block; }
+
+button, input, select, textarea { font: inherit; color: inherit; }
+
+:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+  border-radius: var(--r-sm);
+}
+
+::selection { background: var(--accent); color: var(--accent-ink); }
+
+/* Scrollbars */
+* { scrollbar-width: thin; scrollbar-color: var(--surface-3) transparent; }
+*::-webkit-scrollbar { width: 10px; height: 10px; }
+*::-webkit-scrollbar-thumb { background: var(--surface-3); border-radius: 99px; border: 3px solid transparent; background-clip: content-box; }
+*::-webkit-scrollbar-thumb:hover { background: var(--border); background-clip: content-box; }
+
+/* ---------- Utilities ---------- */
+.row     { display: flex; align-items: center; gap: 10px; }
+.row-between { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
+.wrap    { flex-wrap: wrap; }
+.col     { display: flex; flex-direction: column; }
+.grow    { flex: 1 1 auto; min-width: 0; }
+.center  { display: flex; align-items: center; justify-content: center; }
+
+.muted   { color: var(--text-dim); }
+.faint   { color: var(--text-faint); }
+.small   { font-size: .82rem; }
+.tiny    { font-size: .74rem; }
+.bold    { font-weight: 650; }
+.mono    { font-family: ui-monospace, "SF Mono", "Cascadia Code", Consolas, monospace; font-variant-numeric: tabular-nums; }
+.up      { text-transform: uppercase; letter-spacing: .08em; }
+.strike  { text-decoration: line-through; }
+.nowrap  { white-space: nowrap; }
+.truncate { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.clamp-2 { display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+
+.text-good { color: var(--accent); }
+.text-bad  { color: var(--danger); }
+.text-warn { color: var(--warn); }
+
+.hidden  { display: none !important; }
+.mt-0 { margin-top: 0 } .mt-1 { margin-top: 8px } .mt-2 { margin-top: 16px } .mt-3 { margin-top: 24px }
+.mb-1 { margin-bottom: 8px } .mb-2 { margin-bottom: 16px } .mb-3 { margin-bottom: 24px }
+
+.sr-only {
+  position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px;
+  overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; border: 0;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: .01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: .01ms !important;
+    scroll-behavior: auto !important;
+  }
+}

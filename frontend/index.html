@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#0a0e14">
+<meta name="description" content="DisNotify — get alerted the moment PC parts, consoles and gaming gear go on sale, and compare prices across every retailer.">
+<title>Deals · DisNotify</title>
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='8' fill='%232ee6a8'/%3E%3Ctext x='16' y='23' font-size='20' font-weight='700' text-anchor='middle' font-family='sans-serif' fill='%2304231a'%3ED%3C/text%3E%3C/svg%3E">
+<link rel="stylesheet" href="css/base.css">
+<link rel="stylesheet" href="css/layout.css">
+<link rel="stylesheet" href="css/components.css">
+</head>
+<body>
+<div class="app">
+  <!-- shell (top bar + sidebar + tab bar) is injected by js/layout.js -->
+  <main class="main">
+
+    <div class="page-head">
+      <div>
+        <h1>Live deals</h1>
+        <div class="sub">Every price below is the cheapest offer we found across all tracked retailers.</div>
+      </div>
+      <div class="row">
+        <span class="small muted" id="resultCount">—</span>
+        <button class="btn btn-sm" id="filterToggle">
+          <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 3H2l8 9.5V19l4 2v-8.5Z"/></svg>
+          Filters
+        </button>
+      </div>
+    </div>
+
+    <div class="stat-grid" id="statRow"></div>
+
+    <div class="chip-row mb-2" id="catChips"></div>
+
+    <section class="card mb-3 hidden" id="filterPanel">
+      <div class="card-body">
+        <div class="row-between wrap" style="gap:20px">
+
+          <div style="min-width:220px">
+            <label class="small bold" for="sortSelect">Sort by</label>
+            <select class="select mt-1" id="sortSelect">
+              <option value="discount">Biggest discount</option>
+              <option value="price_asc">Price: low to high</option>
+              <option value="price_desc">Price: high to low</option>
+              <option value="newest">Recently updated</option>
+              <option value="name">Name A–Z</option>
+            </select>
+          </div>
+
+          <div style="min-width:220px" class="grow">
+            <label class="small bold" for="minDiscount">Minimum discount · <span id="minDiscountVal">0%</span></label>
+            <input class="mt-1" id="minDiscount" type="range" min="0" max="60" step="5" value="0"
+                   style="width:100%;accent-color:var(--accent)">
+          </div>
+
+          <label class="row small bold" style="gap:8px;cursor:pointer">
+            <span class="switch"><input type="checkbox" id="inStockOnly"><span class="track"></span></span>
+            In stock only
+          </label>
+
+          <button class="btn btn-ghost btn-sm" id="clearFilters">Clear all</button>
+        </div>
+
+        <div class="divider"></div>
+        <div class="small bold mb-1">Retailers</div>
+        <div class="row wrap" style="gap:8px" id="retailerFilters"></div>
+      </div>
+    </section>
+
+    <section class="deal-grid" id="dealGrid"></section>
+
+    <div class="center mt-3">
+      <button class="btn btn-lg hidden" id="loadMore">Load more deals</button>
+    </div>
+
+  </main>
+</div>
+
+<script type="module" src="js/deals.js"></script>
+<script type="module" src="js/notifications.js"></script>
+</body>
+</html>
