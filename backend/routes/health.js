@@ -16,4 +16,12 @@
    The frontend flips its header pill from MOCK to LIVE based on
    this endpoint — keep it fast and unauthenticated.
    ============================================================ */
+
+import { query, redis } from "../db/client.js";
+import express from "express";
+const router = express.Router();
+
+router.get("/", async (req, res) => {
+
+});
 throw new Error('routes/health.js is a scaffold.');
