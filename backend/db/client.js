@@ -74,7 +74,8 @@ export async function tx(fn){
 }
 
 export async function connect() {
-    await query("SELECT 1");
+    await pool.query("SELECT 1");
+    If (redis.status === "wait") await redis.connect();
     await redis.ping();
 
     console.log("PostgreSql connected");
