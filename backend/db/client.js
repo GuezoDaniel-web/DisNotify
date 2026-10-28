@@ -28,10 +28,15 @@
 
 import pg from "pg";
 import Redis from "ioredis";
+import { log } from "../utils/logger.js";
 
 const {Pool, types} = pg;
 
 types.setTypeParser(1700, parseFloat); // NUMERIC -> float
+
+if (!process.env.DATABASE_URL) throw new Error("DATABASE_URL is required.");
+if (!process.env.REDIS_URL) throw new Error("REDIS_URL is required.");
+
 export const pool = new Pool({
     connectString: process.env.DATABASE_URL,
     max: 10,
@@ -40,21 +45,26 @@ export const pool = new Pool({
     ? { rejectUnauthorized: false }
     : false,
 });
+pool.on("error", (error) => log.error({ err: error }, "Unexpected PostgreSQL pool error"));
 
-export const redis = new Redis(process.env.REDIS_URL);
+export const redis = new Redis(process.env.REDIS_URL,{
+lazyConnect: true,
+maxRetriesPerRequest: 2,
+enableReadyCheck: true,
+});
+redis.on("error", (error) => log.error({ err:error }, "Redis error"));
 
 export async function query(text, params) {
     const start = Date.now();
     try {
-        const result = await pool.query(text, params);
-        const duration = Date.now () - start;
-        if (duration > 200) {
-            console.warn(`Slow query (${duration}ms): ${text}`);
-        }
-        return result;
-    } catch (error) {
-        console.error(`Query error: ${text}`);
+      return await pool.query(text, params);
+    }catch (error) {
+        error.sql = text; 
+        log.error({ err:error, durationMs: Date.now() - start }, "Database query failed");
         throw error;
+    } finally {
+        const durationMs = Date.now() - start;
+        if (durationMs > 200) log.warn({ durationMs, sql: text.slice(0, 500) }, "Slow SQL query");
     }
 }
 
@@ -62,11 +72,13 @@ export async function tx(fn){
     const client = await pool.connect();
     try {
         await client.query("BEGIN");
-        const result = await fn(client);
+        const value = await fn(client);
         await client.query("COMMIT");
-        return result;
+        return value;
     } catch (error) {
-        await client.query("ROLLBACK");
+        try { await client.query("ROLLBACK"); } catch (rollbackError) {
+            log.error({ err: rollbackError }, "Transaction rollback failed");
+        }
         throw error;
     } finally {
         client.release();
@@ -75,18 +87,17 @@ export async function tx(fn){
 
 export async function connect() {
     await pool.query("SELECT 1");
-    If (redis.status === "wait") await redis.connect();
+    if (redis.status === "wait") await redis.connect();
     await redis.ping();
-
-    console.log("PostgreSql connected");
-    console.log("Redis connected");
+    log.info("PostgreSQL and Redis connected");
 }
 
 export async function close() {
-    await redis.quit();
-    await pool.end();
+    await Promise.allSettled([
+        redis.status === "end" ? Promise.resolve() : redis.quit(),
+        pool.end(),
+    ])
 
-    console.log("PostgreSQL and Redis connections closed"); 
+    log.info("PostgreSQL and Redis connections closed"); 
 }
 
-throw new Error('db/client.js is a scaffold — implement the steps in the header comment.');

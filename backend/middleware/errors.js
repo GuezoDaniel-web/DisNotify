@@ -16,4 +16,12 @@
       frontend surfaces `err.message` in toasts and inline errors.
    5. Mount errorHandler LAST in server.js, after all routers.
    ============================================================ */
-throw new Error('middleware/errors.js is a scaffold.');
+import { log } from "..utils/logger.js";
+export default function errorHandler (err, req, res, next) {
+   if (res.headersSent) return next(err);
+   const status = Number(err.status || err.statusCode) || 500;
+   if (status >= 500) log.error({ err, requestedId: req.id }, "Unhandled request error");
+const body = { message: status >= 500 ? "Internal server error" : (err.message || "Request failed") };
+if (err.details && status < 500) body.details = err.details;
+res.status(status).json(body);
+}

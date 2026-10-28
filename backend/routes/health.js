@@ -17,11 +17,22 @@
    this endpoint — keep it fast and unauthenticated.
    ============================================================ */
 
+import { Router } from "express";
 import { query, redis } from "../db/client.js";
-import express from "express";
-const router = express.Router();
-
-router.get("/", async (req, res) => {
-
+const router = Router();
+router.get("/", async (_req,res) => {
+  let db = false, redisOk = false, lastScrapeAt = null, staleOffers = null;
+  try {
+    const r = await query(`SELECT (SELECT MAX(created_at) FROM scrape_log WHERE ok=true) AS last_scrape_at,
+      (SELECT COUNT(*)::integer FROM offers WHERE last_checked < now()-interval '6 hours') AS stale_offers`);
+    db = true; lastScrapeAt = r.rows[0].last_scrape_at; staleOffers = Number(r.rows[0].stale_offers);
+  } catch {}
+  try { redisOk = (await redis.ping()) === "PONG"; } catch {}
+  const status = db && redisOk ? "ok" : "degraded";
+  res.status(db && redisOk ? 200 : 503).json({
+    status, db, redis:redisOk, uptime:process.uptime(),
+    version:process.env.npm_package_version || "0.1.0",
+    lastScrapeAt, staleOffers,
+  });
 });
-throw new Error('routes/health.js is a scaffold.');
+export default router;
